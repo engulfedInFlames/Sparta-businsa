@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+<!-- blank -->
+{% block title %} 입고 {% endblock %}
+<!-- blank -->
+{% block content %}
+<div class="container">
+  <h2 class="title-center" style="text-align: center">입고 신청</h2>
+  <!-- ✅
+          1. action의 url 끝에 "/"를 붙여햐 한다.
+          2. csrf_token은 django의 보안 서비스 중 하나이다.
+        -->
+  <form
+    class="form-area"
+    method="POST"
+    action="/products/{{user.id}}/inbound"
+    style="width: 640px; margin: 0 auto"
+  >
+    {% csrf_token %}
+    <div class="form-group mt-2 mb-2">
+      <label for="code">입고할 상품</label>
+      <select class="form-control" id="code" name="code">
+        {% for product in products%}
+        <option value="{{product.code}}">{{product.name}}</option>
+        {%endfor %}
+      </select>
+    </div>
+    <div class="form-group mt-2 mb-2">
+      <label for="quantity">수량</label>
+      <input type="number" class="form-control" id="quantity" name="quantity" />
+    </div>
+    <div class="form-group mt-2 mb-2">
+      <label for="unit-price">단위 가격 (개당 가격) </label>
+      <input
+        type="number"
+        class="form-control"
+        id="unit-price"
+        name="unit-price"
+      />
+    </div>
+    <div class="form-group mt-2 mb-2">
+      <label for="inbound-date">입고 예정 날짜</label>
+      <input
+        type="date"
+        class="form-control"
+        id="inbound-date"
+        name="inbound-date"
+        min="{{today}}"
+        value="{{today}}"
+      />
+    </div>
+    {% if error %}
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+    {% endif %}
+    <hr />
+    <div style="float: right">
+      <button type="submit" class="btn btn-outline-secondary">입고하기</button>
+      <a href="/products/{{user.id}}/inventory" class="btn btn-secondary"
+        >취소하기</a
+      >
+    </div>
+  </form>
+</div>
+
+{% endblock %}

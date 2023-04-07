@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+<!-- blank -->
+{% block title %} 홈 {% endblock %}
+<!-- blank -->
+{% block content %}
+<div class="container mt-3" style="width: 90%; margin: 0 auto">
+  <div class="row">
+    {%for product in products%}
+    <div class="col-custom-5 col-sm-6 mb-4">
+      <div class="card product-card">
+        <img
+          src="https://placehold.co/200x240"
+          class="card-img-top"
+          alt="Product Image"
+        />
+        <div class="card-body">
+          <h5 class="card-title">{{product.name}}</h5>
+          <p class="card-text">{{product.price}}</p>
+        </div>
+      </div>
+    </div>
+    {%endfor%}
+  </div>
+</div>
+{% endblock %}
