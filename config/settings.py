@@ -41,11 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles',  # ← Ensure to serve static files
     'users.apps.UsersConfig',
     'products.apps.ProductsConfig',
     'inbound.apps.InboundConfig',
     'outbound.apps.OutboundConfig',
+    'sass_processor',
+    'compressor',
 ]
 
 MIDDLEWARE = [
@@ -132,4 +134,20 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# Custom User Config
 AUTH_USER_MODEL = "users.CustomUser"
+
+
+# SASS Config
+SASS_PROCESSOR_ENABLED = True
+SASS_OUTPUT_STYLE = 'compact'
+SASS_PRECISION = 8  # ← 부트스트랩 SASS
+STATIC_ROOT = path.join(BASE_DIR, 'static/')
+# ↓ static 폴더가 루트 디렉토리에 있지 않을 때
+# SASS_PROCESSOR_ROOT = path.join(BASE_DIR, 'static/')
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)

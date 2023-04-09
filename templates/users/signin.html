@@ -6,7 +6,12 @@
 <div class="container">
   <div class="wrap">
     <h2 class="title-center">로그인</h2>
-    <form class="form-area" method="POST" action="/sign-in/">
+    <form
+      class="form-area"
+      method="POST"
+      action="/sign-in/"
+      style="width: 480px; margin: 0 auto"
+    >
       {% csrf_token %}
       <div class="form-group mt-2 mb-2">
         <label for="username">아이디</label>

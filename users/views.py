@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import get_user_model
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
-from users.models import CustomUser
 from products.models import Product
+from users.forms import SignupForm
 
 
 def signin(request):
@@ -33,33 +32,25 @@ def signin(request):
 
 
 def signup(request):
-
     if request.method == "POST":
-        email = request.POST.get("email", "")
-        username = request.POST.get("username", "")
-        password = request.POST.get("password", "")
-        password2 = request.POST.get("password2", "")
-        gender = request.POST.get("gender", "")
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)  # 중복 저장 방지
+            password = form.cleaned_data.get("password1")
+            user.set_password(password)
+            user.save()
+            return redirect("/sign-in")
 
-        exist_user = get_user_model().objects.filter(username=username)
-        if exist_user:
-            return render(request, 'users/signup.html', {'error': '존재하는 계정입니다'})
-
-        if password != password2:
-            # 비밀번호를 제대로 입력하지 않았을 때때
-            return render(request, 'users/signup.html', {'error': '비밀번호를 정확히 입력하세요.'})
-
-        if not username or not password:
-            return render(request, 'users/signup.html', {'error': '사용자 이름과 비밀번호는 반드시 입력해야 합니다.'})
-
-        CustomUser.objects.create_user(
-            email=email, username=username, password=password, gender=gender)
-        return render(request, "users/signin.html")
+        else:
+            if form.errors:
+                print(form.errors)
+                return render(request, "users/signup.html", {"form": form})
 
     if request.user.is_authenticated:
         return redirect('/')
 
-    return render(request, "users/signup.html")
+    form = SignupForm()
+    return render(request, "users/signup.html", {"form": form})
 
 
 @login_required

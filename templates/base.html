@@ -16,6 +16,12 @@
       integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
       crossorigin="anonymous"
     ></script>
+    {% load sass_tags %}
+    <link
+      href="{% sass_src 'css/styles.scss' %}"
+      rel="stylesheet"
+      type="text/css"
+    />
     <style>
       .product-card:hover {
         transform: scale(1.05);
