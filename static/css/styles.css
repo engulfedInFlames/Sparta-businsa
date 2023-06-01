@@ -4,4 +4,10 @@
 
 .errorlist li { color: white; background-color: rgba(255, 0, 0, 0.6); padding: 6px; margin-top: 8px; border: 1px solid red; border-radius: 4px; }
 
+.product-card:hover { transform: scale(1.05); transition: transform 0.3s; }
+
+@media (min-width: 760px) { .col-custom-5 { flex: 0 0 20%; max-width: 20%; } }
+
+@media (max-width: 800px) { .col-custom-5 { flex: 0 0 33.33333%; max-width: 33.33333%; } }
+
 /*# sourceMappingURL=styles.css.map */

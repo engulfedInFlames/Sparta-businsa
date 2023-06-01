@@ -1,9 +1,12 @@
 from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from products.models import Product
+from .models import Product
 from inbound.models import Inbound
+from inbound.forms import InboundForm
 from outbound.models import Outbound
+from outbound.forms import OutboundForm
+from .forms import ProductRegisterForm
 
 
 def home(request):
@@ -12,38 +15,34 @@ def home(request):
     return render(request, "products/home.html", {"products": all_products})
 
 
-def show_detail(request, _id):
-    return render(request, "products/detail.html")
+def detail_view(request, _id):
+    product = Product.objects.get(id=_id)
+    return render(request, "products/detail.html", {"product": product})
 
 
 @login_required
 def register(request):
     if request.method == "GET":
-        return render(request, "products/register.html")
-
-    user_id = None
+        form = ProductRegisterForm()
+        return render(request, "products/register.html", {"form": form})
 
     if request.method == "POST":
-        user = request.user
-        user_id = user.id
+        form = ProductRegisterForm(request.POST)
+        if form.is_valid():
+            product = form.save(commit=False)
 
-        name = request.POST.get("name", "")
-        price = request.POST.get("price", "")
+            """ 14digit Product Code Classification """
 
-        type = request.POST.get("type", "")
-        color = request.POST.get("color", "")
-        size = request.POST.get("size", "")
-        number_of_registered_products = len(Product.objects.all())
-        code = type+color+size + f"{number_of_registered_products}".zfill(6)
+            type = form.cleaned_data.get("type")
+            color = form.cleaned_data.get("color")
+            size = form.cleaned_data.get("size")
+            number_of_registered_products = len(Product.objects.all())
+            code = type + color + size + f"{number_of_registered_products}".zfill(6)
+            product.code = code
+            product.user = request.user
+            product.save()
 
-        if all([user, name, price, type, color, size]):
-            try:
-                product = Product(user=user, name=name, price=price, code=code)
-                product.save()
-            except Product.DoesNotExist:
-                return render(request, "products/register.html", {'error': '입력이 잘못됐습니다. 모든 칸을 채워주세요.'})
-
-    return redirect(f"/profile/{user_id}")
+    return redirect(f"/profile/{request.user.id}")
 
 
 @login_required
@@ -54,20 +53,30 @@ def delete(request, _id):
 
 
 @login_required
-def inventory(request, _id):
+def inventory_view(request, _id):
     all_inbound = Inbound.objects.all().filter(user_id=_id)
     all_outbound = Outbound.objects.all().filter(user_id=_id)
 
-    return render(request, "inventory/inventory.html", {"inbounds": all_inbound, "outbounds": all_outbound})
+    return render(
+        request,
+        "inventory/inventory.html",
+        {"inbounds": all_inbound, "outbounds": all_outbound},
+    )
 
 
+# tranjaction.atomic
 @login_required
 def inbound(request, _id):
     if request.method == "GET":
+        form = InboundForm(_id)
         products = Product.objects.all().filter(user_id=_id)
 
         now = datetime.now().strftime("%Y-%m-%d")
-        return render(request, "inventory/inbound.html", {"today": now, "products": products})
+        return render(
+            request,
+            "inventory/inbound.html",
+            {"today": now, "products": products, "form": form},
+        )
 
     if request.method == "POST":
         user = request.user
@@ -79,8 +88,13 @@ def inbound(request, _id):
         date = request.POST.get("inbound-date", "")
 
         try:
-            inbound = Inbound(user=user, product=product, quantity=quantity,
-                              total_price=total_price, inbound_date=date)
+            inbound = Inbound(
+                user=user,
+                product=product,
+                quantity=quantity,
+                total_price=total_price,
+                inbound_date=date,
+            )
             inbound.save()
             product.stock += quantity
             product.save()
@@ -96,8 +110,9 @@ def outbound(request, _id):
     now = datetime.now().strftime("%Y-%m-%d")
 
     if request.method == "GET":
-
-        return render(request, "inventory/outbound.html", {"today": now, "products": products})
+        return render(
+            request, "inventory/outbound.html", {"today": now, "products": products}
+        )
 
     if request.method == "POST":
         user = request.user
@@ -109,11 +124,20 @@ def outbound(request, _id):
         date = request.POST.get("outbound-date", "")
 
         if product.stock < quantity:
-            return render(request, "inventory/outbound.html", {"error": "출고 수량이 재고 수량보다 많습니다.", "today": now, "products": products})
+            return render(
+                request,
+                "inventory/outbound.html",
+                {"error": "출고 수량이 재고 수량보다 많습니다.", "today": now, "products": products},
+            )
 
         try:
-            outbound = Outbound(user=user, product=product, quantity=quantity,
-                                total_price=total_price, outbound_date=date)
+            outbound = Outbound(
+                user=user,
+                product=product,
+                quantity=quantity,
+                total_price=total_price,
+                outbound_date=date,
+            )
             outbound.save()
             product.stock -= quantity
             product.save()
@@ -123,6 +147,6 @@ def outbound(request, _id):
     return redirect(f"/products/{_id}/inventory")
 
 
-@ login_required
+@login_required
 def order(request):
     return render(request, "products/order.html")

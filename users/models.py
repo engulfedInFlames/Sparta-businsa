@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
-
     def __str__(self) -> str:
         return self.username
 
@@ -13,5 +12,5 @@ class CustomUser(AbstractUser):
 
     gender = models.CharField(
         max_length=10,
-        choices=GenderChoices.choices
+        choices=GenderChoices.choices,
     )

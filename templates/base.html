@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    {% load sass_tags %}
+    <link
+      href="{% sass_src 'css/styles.scss' %}"
+      rel="stylesheet"
+      type="text/css"
+    />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,32 +22,8 @@
       integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
       crossorigin="anonymous"
     ></script>
-    {% load sass_tags %}
-    <link
-      href="{% sass_src 'css/styles.scss' %}"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <style>
-      .product-card:hover {
-        transform: scale(1.05);
-        transition: transform 0.3s;
-      }
 
-      @media (min-width: 760px) {
-        .col-custom-5 {
-          flex: 0 0 20%;
-          max-width: 20%;
-        }
-      }
-      @media (max-width: 800px) {
-        .col-custom-5 {
-          flex: 0 0 33.33333%;
-          max-width: 33.33333%;
-        }
-      }
-    </style>
-    <title>{% block title %}{% endblock %} | Businsa</title>
+    <title>{% block title %} {% endblock %} | Businsa</title>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">

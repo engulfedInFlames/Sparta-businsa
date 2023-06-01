@@ -1,3 +1,4 @@
 {
-  "python.linting.pylintArgs": ["--generate-members", "from_json,query"]
+  "python.linting.pylintArgs": ["--generate-members", "from_json,query"],
+  "python.formatting.provider": "black"
 }

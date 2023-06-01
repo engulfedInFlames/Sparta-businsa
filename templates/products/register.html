@@ -21,58 +21,19 @@
     style="width: 480px; margin: 0 auto"
   >
     {% csrf_token %}
+    <!-- blank -->
+    {% if form %}
+    <!-- blank -->
+    {% for field in form %}
+    <!-- blank -->
     <div class="form-group mt-2 mb-2">
-      <label for="name">상품 이름</label>
-      <input type="text" class="form-control" id="name" name="name" />
+      {{field.label_tag}} {{field}} {{field.errors}}
     </div>
-    <div class="form-group mt-2 mb-2">
-      <label for="price">상품 가격</label>
-      <input type="number" class="form-control" id="price" name="price" />
-    </div>
-    <div
-      style="display: flex; justify-content: space-between; align-items: center"
-    >
-      <div class="form-group mt-2 mb-2" style="width: 32%">
-        <label for="type">상품 유형</label>
-        <select class="form-control" id="type" name="type">
-          <option value="01">상의</option>
-          <option value="02">하의</option>
-          <option value="03">신발</option>
-          <option value="04">악세사리</option>
-        </select>
-      </div>
-      <!-- <div class="form-group mt-2 mb-2">
-            <label for="category">카테고리</label>
-            <select class="form-control" id="category">
-              <option value="1">티셔츠</option>
-              <option value="2">후드티</option>
-              <option value="3">맨투맨/스웨터</option>
-            </select>
-          </div> -->
-      <div class="form-group mt-2 mb-2" style="width: 32%">
-        <label for="color">색깔</label>
-        <select class="form-control" id="color" name="color">
-          <option value="01">흰색</option>
-          <option value="02">검정색</option>
-          <option value="03">파란색</option>
-          <option value="04">빨간색</option>
-        </select>
-      </div>
-      <div class="form-group mt-2 mb-2" style="width: 32%">
-        <label for="size">크기</label>
-        <select class="form-control" id="size" name="size">
-          <!-- Add your size codes here -->
-          <option value="XS">XS</option>
-          <option value="NS">S</option>
-          <option value="NM">M</option>
-          <option value="NL">L</option>
-          <option value="XL">XL</option>
-          <option value="XXL">XXL</option>
-        </select>
-      </div>
-    </div>
-    {% if error %}
-    <div class="alert alert-danger" role="alert">{{ error }}</div>
+    <!-- blank -->
+    {% endfor %}
+    <!-- blank -->
+    {{form.non_field_errors}}
+    <!-- blank -->
     {% endif %}
     <hr />
     <div style="float: right">
