@@ -1,4 +1,7 @@
 {
   "python.linting.pylintArgs": ["--generate-members", "from_json,query"],
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "none",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  }
 }
